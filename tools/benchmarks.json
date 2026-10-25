@@ -1,0 +1,114 @@
+{
+  "Life": {
+    "en": "Conway's Game of Life (B3/S23) on a 32×32 torus whose edges wrap, starting from a random field (seed 12345). Each Step counts the 8 neighbours of every cell and swaps two buffers. Checksum: a position-weighted hash of the cells (the population is computed too, but not compared).",
+    "ja": "端が回り込む 32×32 のトーラスでのライフゲーム（B3/S23）。乱数の初期形（seed 12345）から始める。1 Step で全部のセルの 8 近傍を数え、2 枚の配列を入れ替える。checksum はセルの位置つきのハッシュ（生きているセルの数も数えるが、照合はしない）。",
+    "source_en": "Martin Gardner, \"Mathematical Games: The fantastic combinations of John Conway's new solitaire game 'life'\", Scientific American 223(4), October 1970, pp. 120–123.",
+    "source_ja": "Martin Gardner, \"Mathematical Games: The fantastic combinations of John Conway's new solitaire game 'life'\", Scientific American 223(4), 1970 年 10 月, pp. 120–123。",
+    "analysis_en": "The neighbour indices reuse the same products, such as `ym * n` in `ym * n + xm`. TsukimiSharp computes each repeated expression once and moves the products that do not change in the inner loop (`ym * n` and the like) out of it. Every arithmetic operation is an EXTERN call on Udon, so the saved multiplications show up directly in the time.",
+    "analysis_ja": "近傍の添字は、`ym * n + xm` の `ym * n` のように同じ掛け算を何度も使う。TsukimiSharp は繰り返す式を 1 回にまとめ、内側のループで変わらない `ym * n` などをループの外へ出す。Udon では演算 1 つが extern の呼び出し 1 回なので、減った掛け算がそのまま時間に効く。"
+  },
+  "Fat": {
+    "en": "A ring of 256 bits. For every cell, the Step recomputes the same block of integer arithmetic that only reads fields which do not change during the Step, then sets the next bit from the neighbour and that block: next[i] = (cur[i + 1] + bit) & 1.",
+    "ja": "256 ビットの環。1 Step で、各セルごとに同じ整数演算のブロックを計算し直す。ブロックは Step の間に変わらないフィールドしか読まない。次のビットは隣と、そのブロックの値から決める（next[i] = (cur[i + 1] + bit) & 1）。",
+    "source_en": "Written by the author.",
+    "source_ja": "作者が書いたベンチマーク。",
+    "analysis_en": "The block only reads fields that do not change during the Step, so it could be moved out of the loop. On Udon, though, another behaviour can write a field by name with a value of a different type. An expression built from such a field, moved before the loop, would run even when the loop runs zero times and could stop the program where the original does not. TsukimiSharp currently moves such an expression out only when the field has already been read as its declared type before the loop. Here the block's fields are never read before the loop, so the block stays inside and the two compilers end up close.",
+    "analysis_ja": "ブロックは Step の間に変わらないフィールドしか読まないので、本来はループの外へ出せる。ただ Udon では、フィールドは別の Behaviour から名前で書き換えられ、宣言と違う型の値が入りうる。そのフィールドから作った式をループの前へ出すと、0 回しか回らないループでも式が走り、元のプログラムなら止まらない所で止まりうる。そこで今の TsukimiSharp は、ループの前で宣言の型として一度読まれたフィールドから作った式だけを外へ出す。このベンチマークではブロックのフィールドがループの前で一度も読まれないので、ブロックはループの中に残り、差はほとんど出ない。"
+  },
+  "Fannkuch": {
+    "en": "fannkuch-redux with n = 7. Walk every permutation of 0..6 in a fixed order; for each, keep reversing the first p[0] + 1 elements until p[0] is 0 and count the reversals. The checksum is the sum of the counts with alternating sign, and the largest count is kept too. One Step handles 240 permutations; a full walk of 7! takes 21 Steps and gives checksum 228 and largest count 16.",
+    "ja": "n = 7 の fannkuch-redux。0..6 の順列を決まった順で全部たどり、各順列で先頭の p[0] + 1 個を p[0] が 0 になるまで反転し、反転の回数を数える。checksum は回数を交互の符号で足した値で、回数の最大も持つ。1 Step で 240 通り。7! 通りを全部たどるのに 21 Step かかり、checksum 228・最大 16 になる。",
+    "source_en": "The Computer Language Benchmarks Game, fannkuch-redux (https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/fannkuchredux.html); Kenneth R. Anderson and Duane Rettig, \"Performing Lisp Analysis of the FANNKUCH Benchmark\", ACM SIGPLAN Lisp Pointers VII(4), 1994, pp. 2–12.",
+    "source_ja": "The Computer Language Benchmarks Game の fannkuch-redux（https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/fannkuchredux.html）。元は Kenneth R. Anderson, Duane Rettig, \"Performing Lisp Analysis of the FANNKUCH Benchmark\", ACM SIGPLAN Lisp Pointers VII(4), 1994 年, pp. 2–12。",
+    "analysis_en": "Array reads and writes in short loops, with hardly any repeated expression or call to a small method. There is little for TsukimiSharp to remove, so the difference is small.",
+    "analysis_ja": "短いループの中の配列の読み書きが中心で、同じ式の繰り返しも小さなメソッドの呼び出しもほとんど無い。TsukimiSharp が取り除ける余分が少なく、差は小さい。"
+  },
+  "NBody": {
+    "en": "The Sun and the four gas giants with float and Vector3, symplectic Euler with dt = 0.01, 100 substeps per Step. The initial positions, velocities and masses are those of the Benchmarks Game n-body, rounded to float. Checksum: the total energy (compared with an absolute tolerance of 1e-4).",
+    "ja": "太陽と 4 つの巨大惑星を float と Vector3 で。シンプレクティック・オイラー法で dt = 0.01、1 Step で 100 回進める。初期の位置・速度・質量は Benchmarks Game の n-body の値を float に丸めた物。checksum は全エネルギー（絶対値 1e-4 の許容幅で照合）。",
+    "source_en": "The Computer Language Benchmarks Game, n-body (https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/nbody.html).",
+    "source_ja": "The Computer Language Benchmarks Game の n-body（https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/nbody.html）。",
+    "analysis_en": "Almost every operation here is one EXTERN call (Vector3 operators, float arithmetic, array reads and writes, Mathf.Sqrt). Both compilers make the same calls the same number of times, so there is hardly any difference.",
+    "analysis_ja": "ここでは演算のほとんど（Vector3 の演算子・float の計算・配列の読み書き・Mathf.Sqrt）が 1 回ずつ extern の呼び出しになる。どちらで組んでも同じ物を同じ回数呼ぶので、差はほとんど出ない。"
+  },
+  "Bfs": {
+    "en": "A 32×32 grid with 28% walls (seed 4242). Each Step flips one cell between wall and floor (never the start or the goal), then runs a breadth-first search over the 4-neighbourhood from the top-left cell, with an int array as the queue. The distance to the bottom-right cell and the number of reached cells are folded into a hash.",
+    "ja": "壁が 28% の 32×32 の格子（seed 4242）。1 Step で 1 マスの壁と床を入れ替え（始点と終点は除く）、左上から 4 近傍の幅優先探索をする。キューは int 配列。右下までの距離と、届いたマスの数をハッシュに畳む。",
+    "source_en": "E. F. Moore, \"The shortest path through a maze\", Proceedings of an International Symposium on the Theory of Switching, Part II (Annals of the Computation Laboratory of Harvard University 30), Harvard University Press, 1959, pp. 285–292.",
+    "source_ja": "E. F. Moore, \"The shortest path through a maze\", Proceedings of an International Symposium on the Theory of Switching, Part II（Annals of the Computation Laboratory of Harvard University 30）, Harvard University Press, 1959 年, pp. 285–292。",
+    "analysis_en": "Both compilers make nearly the same EXTERN calls; most of the difference is in the instructions that move values around (PUSH, COPY). TsukimiSharp writes the result of an EXTERN call straight into the local variable and moves `width - 1` and `height - 1` out of the loop. The gain is small.",
+    "analysis_ja": "extern の呼び出しは両方でほぼ同じで、差の大半は値を運ぶ命令（PUSH・COPY）の数から来る。TsukimiSharp は extern の結果をローカル変数へ直接書き、`width - 1` と `height - 1` をループの外へ出す。差は小さい。"
+  },
+  "Sort": {
+    "en": "Fill 256 ints with pseudo-random values, then sort them in place with an iterative quicksort: Hoare partition, the middle element as the pivot, an explicit stack, the smaller side first. A sortedness check and a few sampled elements are folded into a hash.",
+    "ja": "256 個の int を乱数で埋め、反復版のクイックソートでその場で並べる（Hoare の分割・中央の要素を軸・明示のスタック・小さい側を先に）。整列の確かめと、抜き取った要素をハッシュに畳む。",
+    "source_en": "C. A. R. Hoare, \"Quicksort\", The Computer Journal 5(1), 1962, pp. 10–16.",
+    "source_ja": "C. A. R. Hoare, \"Quicksort\", The Computer Journal 5(1), 1962 年, pp. 10–16。",
+    "analysis_en": "The sort is already written the hand-tuned way: an explicit stack instead of recursion and the partition written inline in the loop. With few repeated expressions and no method calls, there is little for TsukimiSharp to remove, and both run at the same speed.",
+    "analysis_ja": "再帰の代わりに明示のスタックを使い、分割もループの中に直に書いた、手で詰めた形。同じ式の繰り返しが少なく、メソッドの呼び出しも無いので、TsukimiSharp にも取り除ける余分がほとんど無く、UdonSharp と同じ速さになる。"
+  },
+  "GrayScott": {
+    "en": "Gray-Scott reaction-diffusion on a 32×32 torus in fixed point (4096 = 1.0, so every value is an int and the result is the same bit for bit everywhere), 5-point Laplacian, dt = 1, Du = 0.16, Dv = 0.08, F = 0.035, k = 0.065, values kept in [0, 1].",
+    "ja": "32×32 のトーラスでの Gray-Scott 反応拡散を固定小数点で（4096 = 1.0。値は全部 int で、結果はどこで回してもビット単位で同じ）。5 点のラプラシアン・dt = 1・Du = 0.16・Dv = 0.08・F = 0.035・k = 0.065。値は [0, 1] に収める。",
+    "source_en": "John E. Pearson, \"Complex Patterns in a Simple System\", Science 261(5118), 1993, pp. 189–192.",
+    "source_ja": "John E. Pearson, \"Complex Patterns in a Simple System\", Science 261(5118), 1993 年, pp. 189–192。",
+    "analysis_en": "As in Life, the 5-point Laplacian reuses the same index products. TsukimiSharp computes them once and moves the ones that do not change in the inner loop out of it.",
+    "analysis_ja": "Life と同じく、5 点のラプラシアンの添字で同じ掛け算を繰り返す。TsukimiSharp はそれを 1 回にまとめ、内側のループで変わらない物をループの外へ出す。"
+  },
+  "Sobel": {
+    "en": "Sobel edge detection on a 48×48 grayscale image (0..255). Each Step computes |gx| + |gy|, capped at 255, for every inner pixel, then blends the edges back into the image ((img × 3 + edge) / 4) so that the next Step sees a different picture.",
+    "ja": "48×48 のグレースケール画像（0..255）に Sobel のエッジ検出をかける。1 Step で内側の全画素の |gx| + |gy|（255 で頭打ち）を求め、画像へ混ぜ戻す（(img × 3 + edge) / 4）。次の Step は別の絵を見る。",
+    "source_en": "Irwin Sobel and Gary Feldman, \"A 3×3 Isotropic Gradient Operator for Image Processing\", presented at the Stanford Artificial Intelligence Project, 1968.",
+    "source_ja": "Irwin Sobel, Gary Feldman, \"A 3×3 Isotropic Gradient Operator for Image Processing\", Stanford Artificial Intelligence Project での発表, 1968 年。",
+    "analysis_en": "Written plainly, the 3×3 neighbourhood repeats index expressions such as `(y - 1) * w` and `x - 1` many times per pixel. UdonSharp computes every one as written; TsukimiSharp computes each once and moves the row products out of the inner loop. In the compiled programs, the body of the inner loop contains 17 multiplications (82 EXTERN calls in all) with UdonSharp and 4 (44 in all) with TsukimiSharp. Every addition and multiplication is an EXTERN call on Udon, so this is where most of the time goes.",
+    "analysis_ja": "3×3 の近傍を素直に書くと、`(y - 1) * w` や `x - 1` のような添字の式が 1 画素あたり何度も出る。UdonSharp は書いたとおり全部計算し、TsukimiSharp は同じ式を 1 回にまとめ、行ごとの掛け算を内側のループの外へ出す。組んだプログラムの内側のループの本体には、UdonSharp では掛け算が 17 個（extern の呼び出しは全部で 82 個）、TsukimiSharp では 4 個（全部で 44 個）ある。Udon では足し算も掛け算も 1 回ずつ extern の呼び出しなので、ここが時間の大半を占める。"
+  },
+  "Sieve": {
+    "en": "The sieve of Eratosthenes on a bool array of 4096 entries, then a walk over the primes that counts them, counts the twin primes and hashes their positions. Each Step runs the whole sieve again; the hash carries over from Step to Step.",
+    "ja": "4096 要素の bool 配列でエラトステネスのふるい。続けて素数をたどり、素数と双子素数を数え、位置をハッシュに畳む。1 Step ごとにふるいを最初からやり直し、ハッシュは Step をまたいで持ち越す。",
+    "source_en": "The sieve of Eratosthenes (Eratosthenes of Cyrene, 3rd century BC), as described in Nicomachus of Gerasa, Introduction to Arithmetic, Book I, ch. 13 (trans. Martin Luther D'Ooge, Macmillan, 1926, pp. 204–206).",
+    "source_ja": "エラトステネスのふるい（キュレネのエラトステネス・紀元前 3 世紀）。記述はゲラサのニコマコス『算術入門』第 1 巻 13 章（Martin Luther D'Ooge 訳, Macmillan, 1926 年, pp. 204–206）。",
+    "analysis_en": "Every loop condition reads `composite.Length`, and UdonSharp reads `.Length` with an EXTERN call on every pass (the compiled program has four such calls, one in each loop condition). The array does not change inside the loops, so TsukimiSharp reads `.Length` once, before the first loop.",
+    "analysis_ja": "どのループも条件で `composite.Length` を読み、UdonSharp は毎周 `.Length` を extern の呼び出しで読む（組んだプログラムには、ループの条件ごとに 1 つ、全部で 4 つある）。配列はループの中で変わらないので、TsukimiSharp は `.Length` を最初のループの前で 1 回だけ読む。"
+  },
+  "Cyclic": {
+    "en": "A cyclic cellular automaton on a 32×32 torus: 8 states, 8 neighbours, threshold 2. A cell moves on to the next state (wrapping to 0) when at least 2 of its neighbours already hold that state. Written with small helper methods (Wrap, At, CountState).",
+    "ja": "32×32 のトーラスでの巡回セル・オートマトン。状態 8 つ・近傍 8 マス・しきい値 2。次の状態にある近傍が 2 つ以上あれば、そのセルは次の状態へ進む（最後の次は 0）。小さなヘルパーメソッド（Wrap・At・CountState）で書いた。",
+    "source_en": "Robert Fisch, Janko Gravner and David Griffeath, \"Cyclic cellular automata in two dimensions\", in K. S. Alexander and J. C. Watkins (eds.), Spatial Stochastic Processes (Progress in Probability 19), Birkhäuser, 1991, pp. 171–185.",
+    "source_ja": "Robert Fisch, Janko Gravner, David Griffeath, \"Cyclic cellular automata in two dimensions\", K. S. Alexander, J. C. Watkins 編, Spatial Stochastic Processes（Progress in Probability 19）所収, Birkhäuser, 1991 年, pp. 171–185。",
+    "analysis_en": "The rule is written with three small methods (Wrap, At, CountState), 28 calls per cell. A method call in UdonSharp copies the arguments, pushes and pops the return address and jumps: 8 to 14 instructions per call in the compiled program, depending on the number of arguments. TsukimiSharp inlines all three, so the cost of the calls disappears.",
+    "analysis_ja": "規則を Wrap・At・CountState の 3 つの小さなメソッドで書いたので、1 セルあたり 28 回の呼び出しがある。UdonSharp のメソッドの呼び出しは、引数の写し・戻り先の積み下ろし・ジャンプで、組んだプログラムでは 1 回ごとに 8〜14 個の命令がかかる（引数の数で変わる）。TsukimiSharp は 3 つともインライン化するので、呼び出しの費用がまるごと消える。"
+  },
+  "Fir": {
+    "en": "A 5-tap FIR low-pass filter with the binomial weights 1 4 6 4 1 (sum 16) over a ring buffer of 1024 int samples. Each Step writes 64 new noise samples into the ring, then filters the whole ring into a second array.",
+    "ja": "1024 サンプルの int のリングに、二項係数の重み 1 4 6 4 1（和 16）の 5 タップ FIR ローパスをかける。1 Step で 64 サンプルのノイズを書き足し、リング全体を別の配列へ濾す。",
+    "source_en": "Written by the author.",
+    "source_ja": "作者が書いたベンチマーク。",
+    "analysis_en": "The inner loop over the 5 taps has a constant count. TsukimiSharp unrolls it, which removes the comparison and the `k++` of every pass. This unrolling is skipped when the program contains an int constant at least as large as its code size in bytes, so this benchmark keeps its int constants small (see the comment in the body).",
+    "analysis_ja": "5 タップの内側のループは回数が定数（5 回）。TsukimiSharp はこれを展開し、毎周の比較と `k++` を消す。この展開は、プログラムにコードの長さ（バイト）以上の int 定数があると行われないので、このベンチマークは int の定数を小さく保ってある（本体のコードのコメントのとおり）。"
+  },
+  "Rgb": {
+    "en": "Contrast and brightness on 32×32 packed 0xRRGGBB pixels, written with small helpers (Channel and Adjust take the channel number as an argument; Clamp255 and Pack do not). The brightness shift changes from Step to Step. Each Step also builds a histogram of the gray values.",
+    "ja": "32×32 の 0xRRGGBB の画素のコントラストと明るさを、小さなヘルパー（Channel・Adjust はチャンネル番号を引数に取る。Clamp255・Pack は取らない）で変える。明るさのずらしは Step ごとに変わる。1 Step ごとに濃淡値のヒストグラムも作る。",
+    "source_en": "Written by the author.",
+    "source_ja": "作者が書いたベンチマーク。",
+    "analysis_en": "When TsukimiSharp inlines the helpers that take the channel number as a literal (Channel, Adjust), expressions such as `8 * c` and `3 + c` fold into constants, which removes EXTERN calls per pixel. Clamp255 and Pack are not inlined and stay as calls.",
+    "analysis_ja": "チャンネル番号をリテラルで渡すヘルパー（Channel・Adjust）を TsukimiSharp がインライン化すると、`8 * c` や `3 + c` が定数に畳まれ、1 画素あたりの extern の呼び出しが減る。Clamp255 と Pack はインライン化されず、呼び出しのまま残る。"
+  },
+  "Noise": {
+    "en": "2-D value noise in fixed point (256 = 1.0): a pseudo-random value at every lattice point, blended with a smoothstep curve, two octaves summed. Written with small helper methods (Lattice, Fade, Lerp, Sample). Each Step renders a 24×24 tile at a scrolling offset and folds it into a hash.",
+    "ja": "固定小数点（256 = 1.0）の 2 次元バリューノイズ。格子点ごとの乱数の値を smoothstep の曲線で混ぜ、2 オクターブを足す。小さなヘルパーメソッド（Lattice・Fade・Lerp・Sample）で書いた。1 Step でずれていく位置の 24×24 のタイルを描き、ハッシュに畳む。",
+    "source_en": "Written by the author.",
+    "source_ja": "作者が書いたベンチマーク。",
+    "analysis_en": "TsukimiSharp inlines Lattice and Fade. Lerp (called inside another call) and Sample (called from two places and large) stay as calls, so the gain is smaller than in Cyclic.",
+    "analysis_ja": "TsukimiSharp は Lattice と Fade をインライン化する。Lerp（呼び出しの中で呼ぶ形）と Sample（2 か所から呼ぶ・大きい）は呼び出しのまま残るので、Cyclic ほどは速くならない。"
+  },
+  "Ripple": {
+    "en": "Water ripples on a 32×32 grid with two buffers. Each inner cell takes half the sum of its four neighbours, subtracts its own value from the Step before, and loses 1/32 of the result. The 3×3 neighbourhood is described by Weight (1 for the four cells above, below, left and right, 0 for the others), and Tap skips the neighbours whose weight is 0. Every fourth Step a drop falls at a pseudo-random place. Checksum: two hashes modulo small primes (1009 and 1013), combined.",
+    "ja": "2 枚の 32×32 の配列で回す水面の波紋。内側の各マスは、4 近傍の和の半分から 1 つ前の Step の自分の値を引き、その 1/32 を減らす。3×3 の近傍を Weight（上下左右が 1、ほかは 0）で書き、Tap は重みが 0 の近傍を飛ばす。4 Step に 1 度、擬似乱数の位置に雨粒が落ちる。checksum は小さな素数（1009 と 1013）を法とする 2 つのハッシュを合わせた値。",
+    "source_en": "Written for this benchmark. The update rule follows Hugo Elias, \"2D Water\" (web page, archived 2 December 1998: https://web.archive.org/web/19981202135801/http://freespace.virgin.net/hugo.elias/graphics/x_water.htm).",
+    "source_ja": "このベンチマークのために書いた。更新の式は Hugo Elias「2D Water」（Web の頁。1998 年 12 月 2 日の保存: https://web.archive.org/web/19981202135801/http://freespace.virgin.net/hugo.elias/graphics/x_water.htm）に従う。",
+    "analysis_en": "The kernel is written the general way, with small helper methods (Index, Offset, Weight, Tap) that could describe any small kernel: 23 calls per cell (Index once, Tap and Weight nine times each, Offset for the four taps with weight 1). UdonSharp makes every call as written, and a call costs 8 to 14 instructions depending on the number of arguments, counted as in Cyclic. TsukimiSharp inlines the helpers. dx and dy are constants at every call, so Weight folds to a constant, the five taps with weight 0 no longer read the array, and Offset becomes a constant too. In the compiled TsukimiSharp program the inner loop has no calls left: 119 instructions, 29 of them EXTERN calls (five array reads and one write). Four multiplications by 1 and four additions of 0 are still there, so the work of a cell comes close to, but not quite down to, the sum of four neighbours divided by 2. The form was chosen on purpose, but it is a common one: someone used to an ordinary compiler splits code into small functions, expecting them to be inlined. On UdonSharp, every function split off costs its calls.",
+    "analysis_ja": "どんな小さなカーネルでも書けるよう、小さなヘルパーメソッド（Index・Offset・Weight・Tap）に分けた汎用の書き方で、1 マスあたり 23 回の呼び出しがある（Index が 1 回、Tap と Weight が 9 回ずつ、Offset が重み 1 の 4 タップで 4 回）。UdonSharp は書いたとおり全部呼び、1 回ごとに引数の数に応じて 8〜14 個の命令がかかる（Cyclic と同じ数え方）。TsukimiSharp はヘルパーをインライン化する。どの呼び出しでも dx と dy が定数なので、Weight は定数に畳まれ、重みが 0 の 5 タップは配列を読まなくなり、Offset も定数になる。組んだ TsukimiSharp のプログラムでは内側のループに呼び出しが残らず、119 個の命令のうち extern の呼び出しは 29 個（配列の読みが 5 つ・書きが 1 つ）。× 1 の掛け算と + 0 の足し算が 4 つずつ残るので、1 マスの仕事は 4 近傍の和を 2 で割る形の手前まで減る。この形はわざと選んだが、よく書かれる形でもある。ふつうのコンパイラーに慣れた人は、小さな関数はインライン化されると見込んで分けて書きがちだが、UdonSharp では関数に分けた分だけ呼び出しの費用がかかる。"
+  }
+}

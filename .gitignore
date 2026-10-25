@@ -1,0 +1,39 @@
+# Unity: everything the editor makes on its own
+/unity/[Ll]ibrary/
+/unity/[Tt]emp/
+/unity/[Oo]bj/
+/unity/[Bb]uild/
+/unity/[Bb]uilds/
+/unity/[Ll]ogs/
+/unity/[Uu]ser[Ss]ettings/
+/unity/*.csproj
+/unity/*.sln
+/unity/.vs/
+/unity/.idea/
+/unity/.vscode/
+
+# Unity creates the other project settings on first open
+/unity/ProjectSettings/*
+!/unity/ProjectSettings/ProjectVersion.txt
+
+# Packages installed by VCC / ALCOM
+/unity/Packages/*/
+/unity/Packages/packages-lock.json
+
+# Only the benchmark sources are tracked under Assets; the SDKs and Unity add their own folders
+/unity/Assets/*
+!/unity/Assets/UdonBench/
+!/unity/Assets/UdonBench.meta
+
+# Made by the UdonBench menus
+/unity/Assets/UdonBench/**/*.asset
+/unity/Assets/UdonBench/**/*.asset.meta
+/unity/Assets/UdonBench/Bench.unity
+/unity/Assets/UdonBench/Bench.unity.meta
+
+# .NET
+/reference/bin/
+/reference/obj/
+
+# Python
+__pycache__/

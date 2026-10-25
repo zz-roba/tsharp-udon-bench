@@ -1,0 +1,100 @@
+    // Breadth-first search on a width x height grid with walls, from the top-left
+    // cell to every reachable cell (4-neighbourhood). Each Step first flips one
+    // cell between wall and floor (never the start or the goal), then searches.
+    // The distance to the bottom-right cell and the number of reached cells are
+    // folded into a running hash.
+    public int width = 32;
+    public int height = 32;
+    public int seed = 4242;
+    public int wallPercent = 28;
+    public int checksum;
+    public int lastDistance;
+
+    int[] wall;
+    int[] dist;
+    int[] queue;
+    int rng;
+    int acc;
+
+    void Start()
+    {
+        Init();
+    }
+
+    int NextRandom()
+    {
+        rng = (rng * 75 + 74) % 65537;
+        return rng;
+    }
+
+    public void Init()
+    {
+        int n = width * height;
+        wall = new int[n];
+        dist = new int[n];
+        queue = new int[n];
+        rng = seed;
+        for (int i = 0; i < n; i++)
+        {
+            wall[i] = (NextRandom() % 100 < wallPercent) ? 1 : 0;
+        }
+        // Keep the start, the goal and their neighbours open.
+        wall[0] = 0;
+        wall[1] = 0;
+        wall[width] = 0;
+        wall[n - 1] = 0;
+        wall[n - 2] = 0;
+        wall[n - 1 - width] = 0;
+        acc = 0;
+        checksum = 0;
+        lastDistance = 0;
+    }
+
+    public void Step()
+    {
+        int n = width * height;
+        int flip = NextRandom() % n;
+        if (flip != 0 && flip != n - 1) wall[flip] = 1 - wall[flip];
+
+        for (int i = 0; i < n; i++) dist[i] = -1;
+        int head = 0;
+        int tail = 0;
+        dist[0] = 0;
+        queue[tail] = 0;
+        tail++;
+        while (head < tail)
+        {
+            int c = queue[head];
+            head++;
+            int cx = c % width;
+            int cy = c / width;
+            int nd = dist[c] + 1;
+            if (cx > 0)
+            {
+                int nb = c - 1;
+                if (wall[nb] == 0 && dist[nb] < 0) { dist[nb] = nd; queue[tail] = nb; tail++; }
+            }
+            if (cx < width - 1)
+            {
+                int nb = c + 1;
+                if (wall[nb] == 0 && dist[nb] < 0) { dist[nb] = nd; queue[tail] = nb; tail++; }
+            }
+            if (cy > 0)
+            {
+                int nb = c - width;
+                if (wall[nb] == 0 && dist[nb] < 0) { dist[nb] = nd; queue[tail] = nb; tail++; }
+            }
+            if (cy < height - 1)
+            {
+                int nb = c + width;
+                if (wall[nb] == 0 && dist[nb] < 0) { dist[nb] = nd; queue[tail] = nb; tail++; }
+            }
+        }
+        lastDistance = dist[n - 1];
+        acc = (acc * 31 + (lastDistance + 1) * 1009 + tail) % 1000003;
+    }
+
+    public void ComputeChecksum()
+    {
+        checksum = acc;
+    }

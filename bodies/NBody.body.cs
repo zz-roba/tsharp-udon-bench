@@ -1,0 +1,88 @@
+    // n-body: the Sun and the four gas giants, symplectic Euler with dt = 0.01
+    // (units: AU, days/365.24, solar masses scaled so G = 1). float + Vector3.
+    // One Step advances `substeps` times. checksum = total energy.
+    public int substeps = 100;
+    public float dt = 0.01f;
+    public float checksum;
+
+    Vector3[] pos;
+    Vector3[] vel;
+    float[] mass;
+
+    void Start()
+    {
+        Init();
+    }
+
+    public void Init()
+    {
+        float pi = 3.141592653589793f;
+        float solarMass = 4f * pi * pi;
+        float daysPerYear = 365.24f;
+        pos = new Vector3[5];
+        vel = new Vector3[5];
+        mass = new float[5];
+
+        pos[0] = Vector3.zero;
+        vel[0] = Vector3.zero;
+        mass[0] = solarMass;
+
+        pos[1] = new Vector3(4.84143144246472090e+00f, -1.16032004402742839e+00f, -1.03622044471123109e-01f);
+        vel[1] = new Vector3(1.66007664274403694e-03f, 7.69901118419740425e-03f, -6.90460016972063023e-05f) * daysPerYear;
+        mass[1] = 9.54791938424326609e-04f * solarMass;
+
+        pos[2] = new Vector3(8.34336671824457987e+00f, 4.12479856412430479e+00f, -4.03523417114321381e-01f);
+        vel[2] = new Vector3(-2.76742510726862411e-03f, 4.99852801234917238e-03f, 2.30417297573763929e-05f) * daysPerYear;
+        mass[2] = 2.85885980666130812e-04f * solarMass;
+
+        pos[3] = new Vector3(1.28943695621391310e+01f, -1.51111514016986312e+01f, -2.23307578892655734e-01f);
+        vel[3] = new Vector3(2.96460137564761618e-03f, 2.37847173959480950e-03f, -2.96589568540237556e-05f) * daysPerYear;
+        mass[3] = 4.36624404335156298e-05f * solarMass;
+
+        pos[4] = new Vector3(1.53796971148509165e+01f, -2.59193146099879641e+01f, 1.79258772950371181e-01f);
+        vel[4] = new Vector3(2.68067772490389322e-03f, 1.62824170038242295e-03f, -9.51592254519715870e-05f) * daysPerYear;
+        mass[4] = 5.15138902046611451e-05f * solarMass;
+
+        // Give the Sun the momentum that makes the total zero.
+        Vector3 p = Vector3.zero;
+        for (int i = 0; i < 5; i++) p = p + vel[i] * mass[i];
+        vel[0] = p * (-1f / solarMass);
+        checksum = 0f;
+    }
+
+    public void Step()
+    {
+        for (int s = 0; s < substeps; s++)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = i + 1; j < 5; j++)
+                {
+                    Vector3 d = pos[i] - pos[j];
+                    float d2 = d.sqrMagnitude;
+                    float mag = dt / (d2 * Mathf.Sqrt(d2));
+                    vel[i] = vel[i] - d * (mass[j] * mag);
+                    vel[j] = vel[j] + d * (mass[i] * mag);
+                }
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                pos[i] = pos[i] + vel[i] * dt;
+            }
+        }
+    }
+
+    public void ComputeChecksum()
+    {
+        float e = 0f;
+        for (int i = 0; i < 5; i++)
+        {
+            e += 0.5f * mass[i] * vel[i].sqrMagnitude;
+            for (int j = i + 1; j < 5; j++)
+            {
+                Vector3 d = pos[i] - pos[j];
+                e -= mass[i] * mass[j] / Mathf.Sqrt(d.sqrMagnitude);
+            }
+        }
+        checksum = e;
+    }

@@ -1,0 +1,142 @@
+{
+  "Bfs": {
+    "1": { "checksum": 64324, "lastDistance": 62 },
+    "2": { "checksum": 58361, "lastDistance": 62 },
+    "3": { "checksum": 873510, "lastDistance": 62 },
+    "5": { "checksum": 498860, "lastDistance": 62 },
+    "10": { "checksum": 30282, "lastDistance": 62 },
+    "21": { "checksum": 289239, "lastDistance": 62 },
+    "30": { "checksum": 85635, "lastDistance": 62 },
+    "100": { "checksum": 750405, "lastDistance": 64 }
+  },
+  "Cyclic": {
+    "1": { "checksum": 828441 },
+    "2": { "checksum": 898755 },
+    "3": { "checksum": 425959 },
+    "5": { "checksum": 743609 },
+    "10": { "checksum": 886145 },
+    "21": { "checksum": 233011 },
+    "30": { "checksum": 850660 },
+    "100": { "checksum": 318824 }
+  },
+  "Fannkuch": {
+    "1": { "checksum": 0, "cycles": 0, "maxFlips": 0 },
+    "2": { "checksum": 0, "cycles": 0, "maxFlips": 0 },
+    "3": { "checksum": 0, "cycles": 0, "maxFlips": 0 },
+    "5": { "checksum": 0, "cycles": 0, "maxFlips": 0 },
+    "10": { "checksum": 0, "cycles": 0, "maxFlips": 0 },
+    "21": { "checksum": 228, "cycles": 1, "maxFlips": 16 },
+    "30": { "checksum": 228, "cycles": 1, "maxFlips": 16 },
+    "100": { "checksum": 228, "cycles": 4, "maxFlips": 16 }
+  },
+  "Fat": {
+    "1": { "checksum": 138453 },
+    "2": { "checksum": 537026 },
+    "3": { "checksum": 436185 },
+    "5": { "checksum": 10323 },
+    "10": { "checksum": 436277 },
+    "21": { "checksum": 169652 },
+    "30": { "checksum": 182872 },
+    "100": { "checksum": 148538 }
+  },
+  "Fir": {
+    "1": { "checksum": 74634 },
+    "2": { "checksum": 94096 },
+    "3": { "checksum": 390929 },
+    "5": { "checksum": 628462 },
+    "10": { "checksum": 356843 },
+    "21": { "checksum": 465267 },
+    "30": { "checksum": 381939 },
+    "100": { "checksum": 886818 }
+  },
+  "GrayScott": {
+    "1": { "checksum": 731935 },
+    "2": { "checksum": 543736 },
+    "3": { "checksum": 636428 },
+    "5": { "checksum": 33020 },
+    "10": { "checksum": 100153 },
+    "21": { "checksum": 274470 },
+    "30": { "checksum": 898689 },
+    "100": { "checksum": 370116 }
+  },
+  "Life": {
+    "1": { "checksum": 351196, "population": 380 },
+    "2": { "checksum": 800300, "population": 299 },
+    "3": { "checksum": 968359, "population": 285 },
+    "5": { "checksum": 598873, "population": 246 },
+    "10": { "checksum": 559387, "population": 218 },
+    "21": { "checksum": 645859, "population": 159 },
+    "30": { "checksum": 919516, "population": 108 },
+    "100": { "checksum": 203102, "population": 109 }
+  },
+  "NBody": {
+    "1": { "checksum": -0.16904996 },
+    "2": { "checksum": -0.16902518 },
+    "3": { "checksum": -0.16901106 },
+    "5": { "checksum": -0.16901885 },
+    "10": { "checksum": -0.16908675 },
+    "21": { "checksum": -0.16908278 },
+    "30": { "checksum": -0.16903965 },
+    "100": { "checksum": -0.1690145 }
+  },
+  "Noise": {
+    "1": { "checksum": 729895 },
+    "2": { "checksum": 118437 },
+    "3": { "checksum": 123103 },
+    "5": { "checksum": 60123 },
+    "10": { "checksum": 976827 },
+    "21": { "checksum": 424581 },
+    "30": { "checksum": 182380 },
+    "100": { "checksum": 271078 }
+  },
+  "Rgb": {
+    "1": { "checksum": 197357 },
+    "2": { "checksum": 214012 },
+    "3": { "checksum": 766107 },
+    "5": { "checksum": 667319 },
+    "10": { "checksum": 713827 },
+    "21": { "checksum": 821736 },
+    "30": { "checksum": 29698 },
+    "100": { "checksum": 791340 }
+  },
+  "Ripple": {
+    "1": { "checksum": 797909 },
+    "2": { "checksum": 231176 },
+    "3": { "checksum": 174414 },
+    "5": { "checksum": 826659 },
+    "10": { "checksum": 629447 },
+    "21": { "checksum": 953621 },
+    "30": { "checksum": 397117 },
+    "100": { "checksum": 963058 }
+  },
+  "Sieve": {
+    "1": { "checksum": 442770 },
+    "2": { "checksum": 860085 },
+    "3": { "checksum": 99212 },
+    "5": { "checksum": 351850 },
+    "10": { "checksum": 529372 },
+    "21": { "checksum": 739081 },
+    "30": { "checksum": 570835 },
+    "100": { "checksum": 272855 }
+  },
+  "Sobel": {
+    "1": { "checksum": 812950 },
+    "2": { "checksum": 5157 },
+    "3": { "checksum": 239022 },
+    "5": { "checksum": 179294 },
+    "10": { "checksum": 900539 },
+    "21": { "checksum": 648686 },
+    "30": { "checksum": 124031 },
+    "100": { "checksum": 920249 }
+  },
+  "Sort": {
+    "1": { "checksum": 136579 },
+    "2": { "checksum": 418083 },
+    "3": { "checksum": 94907 },
+    "5": { "checksum": 703211 },
+    "10": { "checksum": 424007 },
+    "21": { "checksum": 324353 },
+    "30": { "checksum": 678690 },
+    "100": { "checksum": 884695 }
+  }
+}
