@@ -1476,42 +1476,42 @@ Unity 2022.3.22f1, VRChat Worlds SDK 3.10.4, Play mode in the Unity editor (Clie
 Made by `tools/report.py` from a measurement under `results/`.
 
 <!-- results:start -->
-Latest: [`results/2026-10-25-0.10.1`](results/2026-10-25-0.10.1/README.md) (environment and notes there)
+Latest: [`results/2026-10-29-0.10.2`](results/2026-10-29-0.10.2/README.md) (environment and notes there)
 
 Difference = (TsukimiSharp − UdonSharp) / UdonSharp of the time per Step. −40% means a Step takes 0.6 times as long.
 
 | Benchmark | UdonSharp ms/Step | TsukimiSharp ms/Step | Difference |
 |:--|--:|--:|--:|
-| Life | 2.737 | 2.072 | −24.3% |
-| Fat | 0.488 | 0.488 | +0.1% |
-| Fannkuch | 1.946 | 1.909 | −1.9% |
-| NBody | 1.578 | 1.526 | −3.4% |
-| Bfs | 1.663 | 1.574 | −5.3% |
-| Sort | 1.316 | 1.291 | −2.0% |
-| GrayScott | 4.009 | 3.268 | −18.5% |
-| Sobel | 10.787 | 6.161 | −42.9% |
-| Sieve | 3.606 | 2.837 | −21.3% |
-| Cyclic | 8.325 | 4.943 | −40.6% |
-| Fir | 2.697 | 2.118 | −21.5% |
-| Rgb | 4.375 | 3.088 | −29.4% |
-| Noise | 6.165 | 5.097 | −17.3% |
-| Ripple | 6.959 | 1.397 | −79.9% |
+| Life | 2.602 | 1.963 | −24.6% |
+| Fat | 0.465 | 0.099 | −78.8% |
+| Fannkuch | 1.854 | 1.817 | −2.0% |
+| NBody | 1.493 | 1.446 | −3.2% |
+| Bfs | 1.585 | 1.497 | −5.5% |
+| Sort | 1.260 | 1.243 | −1.4% |
+| GrayScott | 3.812 | 3.081 | −19.2% |
+| Sobel | 10.168 | 5.843 | −42.5% |
+| Sieve | 3.394 | 2.688 | −20.8% |
+| Cyclic | 7.841 | 4.508 | −42.5% |
+| Fir | 2.562 | 1.974 | −23.0% |
+| Rgb | 4.091 | 2.900 | −29.1% |
+| Noise | 5.795 | 4.747 | −18.1% |
+| Ripple | 6.508 | 0.907 | −86.1% |
 
 ### Difference
 
-![Difference](results/2026-10-25-0.10.1/charts/difference.svg)
+![Difference](results/2026-10-29-0.10.2/charts/difference.svg)
 
 For each benchmark, how much less time a Step takes with TsukimiSharp than with UdonSharp. A bar left of 0 (green) means TsukimiSharp is faster; right of 0 (orange), slower; grey means the difference rounds to ±0.0%. The bar is computed from the median of the per-session medians; each black dot is one session. Dots close to the bar mean the sessions agree.
 
 ### Box plot (all benchmarks)
 
-![Box plot](results/2026-10-25-0.10.1/charts/boxplot.svg)
+![Box plot](results/2026-10-29-0.10.2/charts/boxplot.svg)
 
 The timed runs, per benchmark, for UdonSharp (grey) and TsukimiSharp (blue). The benchmarks take very different times, so the axis is scaled so that the UdonSharp time per Step of each benchmark in the table is 100%. The boxes pool the timed runs of every session: the box holds the middle half of the runs, the thick line in it is the median, and the whiskers reach the farthest run within 1.5 box lengths beyond the box. Runs beyond the whiskers are not drawn; nearly all of them are slow runs, and some of them fall in the same round for both compilers (probably the editor or the OS; not investigated). A blue box clear of the grey box and to its left means TsukimiSharp is faster by more than the noise; overlapping boxes mean the difference is about the size of the noise. The number on the right is the TsukimiSharp time in the table as a percentage of UdonSharp (100% + the difference). Rows are sorted by the difference, the largest speed-up first.
 
 ### Box plot per benchmark
 
-![Box plot per benchmark](results/2026-10-25-0.10.1/charts/distribution.svg)
+![Box plot per benchmark](results/2026-10-29-0.10.2/charts/distribution.svg)
 
 The same box plots, one per benchmark, in milliseconds, for reading the actual time of a Step. The number at the top right is the difference. Each benchmark has its own axis.
 

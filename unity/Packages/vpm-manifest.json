@@ -4,7 +4,7 @@
       "version": "3.10.4"
     },
     "com.tsukimicode.udon-tools": {
-      "version": "0.10.1"
+      "version": "0.10.2"
     }
   },
   "locked": {
@@ -18,7 +18,7 @@
       }
     },
     "com.tsukimicode.udon-tools": {
-      "version": "0.10.1",
+      "version": "0.10.2",
       "dependencies": {
         "com.vrchat.worlds": ">=3.10.4"
       }
